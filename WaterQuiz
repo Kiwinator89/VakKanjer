@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>Water & Duurzaamheid Quiz</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    text-align: center;
+  }
+  button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    font-size: 16px;
+  }
+  .goed { background-color: #4CAF50; color: white; }
+  .fout { background-color: #F44336; color: white; }
+</style>
+</head>
+
+<body>
+
+<h1>💧 Water & Duurzaamheid</h1>
+<p id="vraag"></p>
+<div id="antwoorden"></div>
+
+<script>
+const quiz = [
+  {
+    vraag: "1. Hoeveel water op aarde is drinkbaar?",
+    antwoorden: ["70%", "10%", "Minder dan 1%", "25%"],
+    goed: 2
+  },
+  {
+    vraag: "2. Wat zijn gevolgen van de stijgende zeespiegel?",
+    antwoorden: [
+      "Meer drinkwater",
+      "Overstromingen en verlies van land",
+      "Schonere oceanen",
+      "Lagere temperaturen"
+    ],
+    goed: 1
+  },
+  {
+    vraag: "3. Hoe raken rivieren vervuild?",
+    antwoorden: [
+      "Alleen door regen",
+      "Door industrie, afval en landbouw",
+      "Door vissen",
+      "Door zonlicht"
+    ],
+    goed: 1
+  },
+  {
+    vraag: "4. Hoeveel procent van de wereldbevolking heeft een tekort aan drinkwater?",
+    antwoorden: ["5%", "15%", "25%", "Ongeveer 30%"],
+    goed: 3
+  },
+  {
+    vraag: "5. Hoeveel liter drinkwater gebruikt de gemiddelde Nederlander per dag?",
+    antwoorden: ["50 liter", "80 liter", "130 liter", "300 liter"],
+    goed: 2
+  }
+];
+
+let huidigeVraag = 0;
+
+function toonVraag() {
+  document.getElementById("vraag").innerText = quiz[huidigeVraag].vraag;
+  const container = document.getElementById("antwoorden");
+  container.innerHTML = "";
+
+  quiz[huidigeVraag].antwoorden.forEach((tekst, index) => {
+    const knop = document.createElement("button");
+    knop.innerText = tekst;
+    knop.onclick = () => checkAntwoord(index, knop);
+    container.appendChild(knop);
+  });
+}
+
+function checkAntwoord(index, knop) {
+  const juiste = quiz[huidigeVraag].goed;
+
+  if (index === juiste) {
+    knop.classList.add("goed");
+  } else {
+    knop.classList.add("fout");
+  }
+
+  setTimeout(() => {
+    huidigeVraag++;
+    if (huidigeVraag < quiz.length) {
+      toonVraag();
+    } else {
+      eindeQuiz();
+    }
+  }, 800);
+}
+
+function eindeQuiz() {
+  const gewonnen = Math.floor(Math.random() * 250) === 0;
+
+  if (gewonnen) {
+    document.body.innerHTML = `
+      <h1>🎉 GEFELICITEERD!</h1>
+      <h2>JE HEBT EEN PRIJS GEWONNEN!</h2>
+      <p>Dank je dat je bewust bezig bent met water 💧</p>
+    `;
+  } else {
+    document.body.innerHTML = `
+      <h1>Dank je wel!</h1>
+      <p>Je hebt nu meer geleerd over water en duurzaamheid.</p>
+      <p>Elke druppel telt 💧</p>
+    `;
+  }
+}
+
+toonVraag();
+</script>
+
+</body>
+</html>
