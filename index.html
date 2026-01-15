@@ -12,16 +12,13 @@
     padding: 20px;
     text-align: center;
     background: #e0f7fa;
-    transition: background 0.5s;
   }
 
-  h1 {
-    animation: fadeIn 1s ease;
-  }
+  h1 { animation: fadeIn 1s ease; }
 
   p {
     font-size: 18px;
-    animation: fadeIn 1s ease;
+    animation: fadeIn 0.5s ease;
   }
 
   button {
@@ -33,47 +30,22 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s;
   }
 
-  button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  }
+  button:hover { transform: scale(1.05); }
 
-  .goed {
-    background-color: #4CAF50;
-    color: white;
-  }
+  .goed { background-color: #4CAF50; color: white; }
+  .fout { background-color: #F44336; color: white; }
 
-  .fout {
-    background-color: #F44336;
-    color: white;
+  #uitleg {
+    margin-top: 15px;
+    font-weight: bold;
   }
 
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
-  }
-
-  @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-    40% { transform: translateY(-15px); }
-    60% { transform: translateY(-8px); }
-  }
-
-  .bounce {
-    animation: bounce 0.5s;
-  }
-
-  #confetti-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 9999;
   }
 </style>
 </head>
@@ -83,21 +55,22 @@
 <h1>💧 Water & Duurzaamheid</h1>
 <p id="vraag"></p>
 <div id="antwoorden"></div>
+<p id="uitleg"></p>
 
 <audio id="goed-geluid" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
 <audio id="fout-geluid" src="https://actions.google.com/sounds/v1/cartoon/boing.ogg"></audio>
 <audio id="gewonnen-geluid" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg"></audio>
 
-<canvas id="confetti-canvas"></canvas>
-
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
+/* ================== QUIZ VRAGEN ================== */
 const quiz = [
   {
     vraag: "1. Hoeveel water op aarde is drinkbaar?",
     antwoorden: ["70%", "10%", "Minder dan 1%", "25%"],
-    goed: 2
+    goed: 2,
+    uitleg: "Het meeste water op aarde is zout; minder dan 1% is direct drinkbaar."
   },
   {
     vraag: "2. Wat zijn gevolgen van de stijgende zeespiegel?",
@@ -107,7 +80,8 @@ const quiz = [
       "Schonere oceanen",
       "Lagere temperaturen"
     ],
-    goed: 1
+    goed: 1,
+    uitleg: "Door klimaatverandering stijgt de zee en lopen laaggelegen gebieden onder."
   },
   {
     vraag: "3. Hoe raken rivieren vervuild?",
@@ -117,77 +91,82 @@ const quiz = [
       "Door vissen",
       "Door zonlicht"
     ],
-    goed: 1
+    goed: 1,
+    uitleg: "Afval en bestrijdingsmiddelen vervuilen rivieren."
   },
   {
     vraag: "4. Hoeveel procent van de wereldbevolking heeft een tekort aan drinkwater?",
     antwoorden: ["5%", "15%", "25%", "Ongeveer 30%"],
-    goed: 3
+    goed: 3,
+    uitleg: "Ongeveer 1 op de 3 mensen heeft geen veilige toegang tot drinkwater."
   },
   {
     vraag: "5. Hoeveel liter drinkwater gebruikt de gemiddelde Nederlander per dag?",
     antwoorden: ["50 liter", "80 liter", "130 liter", "300 liter"],
-    goed: 2
+    goed: 2,
+    uitleg: "Gemiddeld gebruikt een Nederlander ongeveer 130 liter per dag."
   },
   {
-    vraag: "6. Hoeveel liter water gebruik je gemiddeld tijdens het tandenpoetsen (kraan open)?",
-    antwoorden: [
-      "1 liter",
-      "5 liter",
-      "Ongeveer 15 liter",
-      "Meer dan 30 liter"
-    ],
-    goed: 2
+    vraag: "6. Hoeveel liter water gebruik je tijdens tandenpoetsen met open kraan?",
+    antwoorden: ["1 liter", "5 liter", "Ongeveer 15 liter", "Meer dan 30 liter"],
+    goed: 2,
+    uitleg: "Door de kraan dicht te doen bespaar je veel water."
   },
   {
-    vraag: "7. Hoeveel drinkwater is er gemiddeld per persoon op aarde beschikbaar?",
+    vraag: "7. Hoe is drinkwater verdeeld op aarde?",
     antwoorden: [
-      "Meer dan genoeg voor iedereen",
       "Iedereen heeft evenveel",
-      "Er is ongelijk verdeeld en vaak te weinig",
-      "Ongeveer 10.000 liter per dag"
+      "Meer dan genoeg voor iedereen",
+      "Ongelijk verdeeld en vaak te weinig",
+      "10.000 liter per dag"
     ],
-    goed: 2
+    goed: 2,
+    uitleg: "Sommige gebieden hebben grote tekorten, andere veel water."
   },
   {
-    vraag: "8. Hoeveel liter schoon drinkwater kost één keer de toilet doorspoelen?",
-    antwoorden: [
-      "2 liter",
-      "4 liter",
-      "6 tot 9 liter",
-      "20 liter"
-    ],
-    goed: 2
+    vraag: "8. Hoeveel liter water kost één keer toilet doorspoelen?",
+    antwoorden: ["2 liter", "4 liter", "6 tot 9 liter", "20 liter"],
+    goed: 2,
+    uitleg: "Moderne toiletten gebruiken 6 tot 9 liter per spoelbeurt."
   },
   {
-    vraag: "9. Welke simpele actie bespaart het meeste water in huis?",
-    antwoorden: [
-      "Lichten uitdoen",
-      "Korter douchen",
-      "TV uitzetten",
-      "Ramen sluiten"
-    ],
-    goed: 1
+    vraag: "9. Wat bespaart het meeste water in huis?",
+    antwoorden: ["Lichten uitdoen", "Korter douchen", "TV uitzetten", "Ramen sluiten"],
+    goed: 1,
+    uitleg: "Korter douchen bespaart tientallen liters per keer."
   },
   {
-    vraag: "10. Waarom is het belangrijk om water te besparen?",
+    vraag: "10. Waarom is water besparen belangrijk?",
     antwoorden: [
-      "Omdat water altijd opraakt",
-      "Omdat schoon drinkwater schaars is",
+      "Water raakt altijd op",
+      "Schoon drinkwater is schaars",
       "Alleen om geld te besparen",
       "Alleen voor fabrieken"
     ],
-    goed: 1
+    goed: 1,
+    uitleg: "Schoon drinkwater is waardevol en niet onbeperkt."
   }
 ];
 
+/* ================== LOGICA ================== */
 let huidigeVraag = 0;
 
-const goedGeluid = document.getElementById("goed-geluid");
-const foutGeluid = document.getElementById("fout-geluid");
-const gewonnenGeluid = document.getElementById("gewonnen-geluid");
+function vandaag() {
+  return new Date().toISOString().split("T")[0];
+}
+
+function checkDagReset() {
+  const opgeslagenDag = localStorage.getItem("quiz_dag");
+  if (opgeslagenDag !== vandaag()) {
+    localStorage.setItem("quiz_dag", vandaag());
+    localStorage.setItem("winnaars_vandaag", "0");
+  }
+}
+
+checkDagReset();
 
 function toonVraag() {
+  document.getElementById("uitleg").innerText = "";
   document.getElementById("vraag").innerText = quiz[huidigeVraag].vraag;
   const container = document.getElementById("antwoorden");
   container.innerHTML = "";
@@ -201,37 +180,40 @@ function toonVraag() {
 }
 
 function checkAntwoord(index, knop) {
-  const juiste = quiz[huidigeVraag].goed;
+  document.querySelectorAll("button").forEach(b => b.disabled = true);
 
-  if (index === juiste) {
-    knop.classList.add("goed", "bounce");
-    goedGeluid.play();
+  if (index === quiz[huidigeVraag].goed) {
+    knop.classList.add("goed");
+    document.getElementById("goed-geluid").play();
   } else {
-    knop.classList.add("fout", "bounce");
-    foutGeluid.play();
+    knop.classList.add("fout");
+    document.getElementById("fout-geluid").play();
   }
+
+  document.getElementById("uitleg").innerText = quiz[huidigeVraag].uitleg;
 
   setTimeout(() => {
     huidigeVraag++;
-    if (huidigeVraag < quiz.length) {
-      toonVraag();
-    } else {
-      eindeQuiz();
-    }
-  }, 800);
+    huidigeVraag < quiz.length ? toonVraag() : eindeQuiz();
+  }, 2000);
 }
 
 function eindeQuiz() {
-  const gewonnen = Math.floor(Math.random() * 250) === 0;
+  checkDagReset();
+
+  let winnaars = parseInt(localStorage.getItem("winnaars_vandaag")) || 0;
+  const gewonnen = Math.floor(Math.random() * 250) === 0 && winnaars < 5;
 
   if (gewonnen) {
-    gewonnenGeluid.play();
+    winnaars++;
+    localStorage.setItem("winnaars_vandaag", winnaars.toString());
+    document.getElementById("gewonnen-geluid").play();
+    confettiEffect();
     document.body.innerHTML = `
       <h1>🎉 GEFELICITEERD!</h1>
-      <h2>JE HEBT EEN PRIJS GEWONNEN!</h2>
-      <p>Dank je dat je bewust bezig bent met water 💧</p>
+      <h2>Je hebt een prijs gewonnen!</h2>
+      <p>Meld je bij de receptie 💧</p>
     `;
-    confettiEffect();
   } else {
     document.body.innerHTML = `
       <h1>Dank je wel!</h1>
@@ -242,19 +224,15 @@ function eindeQuiz() {
 }
 
 function confettiEffect() {
-  const duration = 5000;
-  const animationEnd = Date.now() + duration;
-
-  function frame() {
-    if (Date.now() > animationEnd) return;
+  const eind = Date.now() + 4000;
+  (function frame() {
     confetti({
       particleCount: 40,
       spread: 360,
       origin: { x: Math.random(), y: Math.random() - 0.2 }
     });
-    requestAnimationFrame(frame);
-  }
-  frame();
+    if (Date.now() < eind) requestAnimationFrame(frame);
+  })();
 }
 
 toonVraag();
@@ -262,4 +240,5 @@ toonVraag();
 
 </body>
 </html>
+
 
